@@ -1,0 +1,113 @@
+@import './../../../assets/scss/colors';
+@import './../../../assets/scss/mixins';
+
+.productItem {
+    padding: 8px;
+    background-color: $ui-02;
+    border-radius: 4px;
+    box-shadow: 0px 0px 3px rgba(27, 38, 51, 0.25);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+
+    &__thumbnail {
+        width: 85px;
+        height: 112px;
+        flex-shrink: 0;
+
+        &Img {
+            display: block;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__titleWrap {
+        flex-grow: 1;
+        flex-shrink: 1;
+        width: 100%;
+
+    }
+
+    &__title {
+        @include ellipsis;
+        font-weight: 900;
+        font-size: 20px;
+        line-height: 22px;
+        margin-bottom: 4px;
+    }
+
+    &__date {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    &__content {
+        flex-grow: 1;
+        width: calc(100% - 105px);
+    }
+
+    &__categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 4px;
+        margin-top: 12px;
+    }
+
+    &__category {
+        @include center-flex;
+        background-color: $support-01;
+        font-size: 12px;
+        line-height: 22px;
+        text-align: center;
+        padding: 2px 12px;
+        border-radius: 48px;
+        width: fit-content;
+    }
+
+    &__infoWrap {
+        display: flex;
+        width: 100%;
+        flex-grow: 1;
+        gap: 14px;
+        justify-content: space-between;
+    }
+
+    &__newBadge {
+        @include center-flex;
+        background-color: $ui-03;
+        padding: 12px;
+        border-radius: 9px 0px 9px 9px;
+        width: 54px;
+        height: 34px;
+
+        &Text {
+            color: $ui-04;
+            text-align: center;
+            text-transform: uppercase;
+        }
+    }
+
+    &.-new {
+        .productItem {
+            &__titleWrap {
+                width: calc(100% - 70px);
+            }
+        }
+    }
+
+    &.-noImg {
+        .productItem {
+            &__thumbnail {
+                @include center-flex;
+
+                &Img {
+                    height: 49px;
+                    width: 49px;
+                    object-fit: contain;
+                }
+            }
+        }
+    }
+}

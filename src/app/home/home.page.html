@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-title class="ion-text-center">
+      Inventory
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list class="itemList">
+      <app-product-item *ngFor="let product of (inventory$ | async)" [product]="product"></app-product-item>
+  </ion-list>
+  <ion-fab vertical="bottom" slot="fixed" class="openScannerBtnWrap">
+    <ion-fab-button horizontal="center" color="secondary" (click)="openScanner()" class="openScannerBtn">
+      <ion-icon src="./../../assets/icons/barcode.svg" class="openScannerBtn__icon"></ion-icon>
+      <ion-text class="openScannerBtn__text">Scan product</ion-text>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

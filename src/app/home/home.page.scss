@@ -1,0 +1,35 @@
+@import './../../assets/scss/colors';
+
+.itemList {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.openScannerBtn {
+    --margin: 0;
+    --border-radius: 48px;
+    height: 42px;
+    box-sizing: border-box;
+
+    width: 160px;
+
+    &__icon {
+        font-size: 18px;
+    }
+
+    &__text {
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-left: 8px;
+        font-size: 12px;
+    }
+
+    &Wrap {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding-bottom: 16px;
+    }
+}

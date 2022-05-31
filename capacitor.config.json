@@ -1,0 +1,14 @@
+{
+  "appId": "io.ionic.inventory",
+  "appName": "Inventory",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {},
+  "server": {
+    "url": "http://192.168.1.4:8100",
+    "cleartext": true,
+    "originalUrl": "http://192.168.80.1:8100",
+    "originalCleartext": true
+  }
+}

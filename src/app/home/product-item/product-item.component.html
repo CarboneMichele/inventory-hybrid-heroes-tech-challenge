@@ -1,0 +1,22 @@
+<div class="productItem" [ngClass]="{'-noImg': !imgSrc, '-new': isNew}">
+  <div class="productItem__thumbnail">
+    <img [src]="imgSrc ? imgSrc : './../../../assets/images/img-placeholder.png'" alt="product-image" class="productItem__thumbnailImg">
+  </div>
+  <div class="productItem__content">
+    <div class="productItem__infoWrap">
+      <div class="productItem__titleWrap">
+        <p class="productItem__title">{{title}}</p>
+        <p class="productItem__date">{{product.createdTime | date:'dd.MM.yyyy'}}</p>
+      </div>
+      <div class="productItem__newBadge" *ngIf="isNew">
+        <p class="productItem__newBadgeText">New</p>
+      </div>
+    </div>
+    <div class="productItem__categories" *ngIf="categories.length">
+      <div class="productItem__category" *ngFor="let category of categories">
+        <p class="productItem__categoryText">{{category}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
