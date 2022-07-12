@@ -1,8 +1,6 @@
 <ion-header>
   <ion-toolbar color="tertiary">
-    <ion-title class="ion-text-center">
-      Inventory
-    </ion-title>
+    <ion-title class="ion-text-center"> Inventory    {{ fetching$ | async | json}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,12 +8,27 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list class="itemList">
+  <ion-list class="itemList" >
       <app-product-item *ngFor="let product of (inventory$ | async)" [product]="product"></app-product-item>
   </ion-list>
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="fetchMoreItems($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data..."
+    >
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
   <ion-fab vertical="bottom" slot="fixed" class="openScannerBtnWrap">
-    <ion-fab-button horizontal="center" color="secondary" (click)="openScanner()" class="openScannerBtn">
-      <ion-icon src="./../../assets/icons/barcode.svg" class="openScannerBtn__icon"></ion-icon>
+    <ion-fab-button
+      horizontal="center"
+      color="secondary"
+      (click)="openScanner()"
+      class="openScannerBtn"
+    >
+      <ion-icon
+        src="./../../assets/icons/barcode.svg"
+        class="openScannerBtn__icon"
+      ></ion-icon>
       <ion-text class="openScannerBtn__text">Scan product</ion-text>
     </ion-fab-button>
   </ion-fab>

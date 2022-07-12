@@ -21,6 +21,10 @@ export interface InventoryState {
   sending: boolean;
   byId: { [id: string]: Inventory };
   allIds: string[];
+  pagination: {
+    offset: string;
+    allRecords: Inventory[];
+  };
 }
 
 const initialState = {
@@ -28,6 +32,10 @@ const initialState = {
   sending: false,
   byId: {},
   allIds: [],
+  pagination: {
+    offset: '0',
+    allRecords: []
+  },
 };
 
 const FETCH_INVENTORY = 'FETCH_INVENTORY';
@@ -40,13 +48,17 @@ const SEND_INVENTORY_ERROR = 'SEND_INVENTORY_ERROR';
 interface FetchInventoryAction extends Action<typeof FETCH_INVENTORY> {}
 interface FetchInventorySuccessAction
   extends Action<typeof FETCH_INVENTORY_SUCCESS> {
-  payload: Inventory[];
+  payload: {
+    records: Inventory[];
+    offset: string;
+  };
 }
 interface FetchInventoryErrorAction
   extends Action<typeof FETCH_INVENTORY_ERROR> {
   error: boolean;
   payload: Error;
 }
+
 interface SendInventoryAction extends Action<typeof SEND_INVENTORY> {}
 interface SendInventorySuccessAction
   extends Action<typeof SEND_INVENTORY_SUCCESS> {
@@ -71,31 +83,39 @@ export class InventoryActions {
   constructor() {}
 
   fetchInventory =
-    (): ThunkAction<void, RootState, undefined, InventoryAction> =>
-    (dispatch) => {
-      dispatch({ type: FETCH_INVENTORY });
-      fetch(
-        'https://api.airtable.com/v0/appJkRh9E7qNlXOav/Home?offset=0&maxRecords=100&view=Grid%20view',
-        {
-          headers: {
-            Authorization: config.Authorization,
-          },
-        }
-      )
-        .then((response: any) => response.json())
-        .then((body) => {
-          dispatch({
-            type: FETCH_INVENTORY_SUCCESS,
-            payload: body.records,
+    (refresh: boolean = false): ThunkAction<void, RootState, undefined, InventoryAction> =>
+    (dispatch, getState) => {
+      const { offset, allRecords } = getState().inventory.pagination;
+      if (offset || refresh) {
+        dispatch({ type: FETCH_INVENTORY });
+        const fetchUrlParams = refresh ? `offset=0&view=Grid%20view` : `offset=${offset}&view=Grid%20view`;
+
+        fetch(
+          `https://api.airtable.com/v0/appJkRh9E7qNlXOav/Home?${fetchUrlParams}`,
+          {
+            headers: {
+              Authorization: config.Authorization,
+            },
+          }
+        )
+          .then((response: any) => response.json())
+          .then((body) => {
+            dispatch({
+              type: FETCH_INVENTORY_SUCCESS,
+              payload: {
+                records: refresh ? [...body.records] : [...allRecords, ...body.records],
+                offset: body.offset ? body.offset : ''
+              },
+            });
+          })
+          .catch((e) => {
+            dispatch({
+              type: FETCH_INVENTORY_ERROR,
+              error: true,
+              payload: e,
+            });
           });
-        })
-        .catch((e) => {
-          dispatch({
-            type: FETCH_INVENTORY_ERROR,
-            error: true,
-            payload: e,
-          });
-        });
+      }
     };
 
   sendInventory =
@@ -161,11 +181,15 @@ export const inventoryReducer: Reducer<InventoryState, InventoryAction> = (
       return {
         ...state,
         fetching: false,
-        byId: action.payload.reduce((byId, item) => {
+        byId: action.payload.records.reduce((byId, item) => {
           byId[item.id] = item;
           return byId;
         }, {}),
-        allIds: action.payload.map((item) => item.id),
+        allIds: action.payload.records.map((item) => item.id),
+        pagination: {
+          offset: action.payload.offset,
+          allRecords: [...action.payload.records]
+        },
       };
     case FETCH_INVENTORY_ERROR:
       return {
